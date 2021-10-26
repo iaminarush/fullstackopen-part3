@@ -48,11 +48,22 @@ app.get("/api/persons/:id", (request, response) => {
 app.post("/api/persons/", (request, response) => {
   const body = request.body;
 
-  // if (!body.name) {
-  //   return response.status(400).json({
-  //     error: "name missing",
-  //   });
-  // }
+  if (!body.name) {
+    return response.status(400).json({
+      error: "Name is missing",
+    });
+  }
+
+  if (!body.number) {
+    return response.status(400).json({
+      error: "Number is missing",
+    });
+  }
+
+  if (persons.find((person) => person.name === body.name)) {
+    return response.status(400).json({ error: "Name must be unique" });
+  }
+
   console.log(body);
   const person = {
     id: generateId(),
