@@ -39,10 +39,6 @@ let persons = [
   },
 ];
 
-const generateId = () => {
-  return Math.floor(Math.random() * 100000000);
-};
-
 app.get("/api/persons", (request, response) => {
   Person.find({}).then((persons) => {
     response.json(persons);
@@ -59,13 +55,6 @@ app.get("/api/persons/:id", (request, response, next) => {
       }
     })
     .catch((error) => next(error));
-  // const id = Number(request.params.id);
-  // const person = persons.find((person) => person.id === id);
-  // if (person) {
-  //   response.json(person);
-  // } else {
-  //   response.status(404).end();
-  // }
 });
 
 app.post("/api/persons", (request, response) => {
@@ -83,9 +72,9 @@ app.post("/api/persons", (request, response) => {
     });
   }
 
-  if (persons.find((person) => person.name === body.name)) {
-    return response.status(400).json({ error: "Name must be unique" });
-  }
+  // if (persons.find((person) => person.name === body.name)) {
+  //   return response.status(400).json({ error: "Name must be unique" });
+  // }
 
   const person = new Person({
     name: body.name,
@@ -97,17 +86,27 @@ app.post("/api/persons", (request, response) => {
   });
 });
 
+app.put("/api/persons/:id", (request, response, next) => {
+  const body = request.body;
+
+  const person = {
+    name: body.name,
+    number: body.number,
+  };
+
+  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then((updatedPerson) => {
+      response.json(updatedPerson);
+    })
+    .catch((error) => next(error));
+});
+
 app.delete("/api/persons/:id", (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
     .then((result) => {
       response.status(204).end();
     })
     .catch((error) => next(error));
-
-  // const id = Number(request.params.id);
-  // persons = persons.filter((person) => person.id !== id);
-
-  // response.status(204).end();
 });
 
 app.get("/info", (request, response) => {
