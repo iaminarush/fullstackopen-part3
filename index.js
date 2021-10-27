@@ -110,10 +110,12 @@ app.delete("/api/persons/:id", (request, response, next) => {
 });
 
 app.get("/info", (request, response) => {
-  response.send(`
-  <p>Phonebook has info for ${persons.length} people</p>
-  <p>${Date().toString()}</p>
-  `);
+  Person.count({}).then((count) => {
+    response.send(`
+      <p>Phonebook has info for ${count} people</p>
+      <p>${Date().toString()}</p>
+    `);
+  });
 });
 
 const unknownEndpoint = (request, response) => {
