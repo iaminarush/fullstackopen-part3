@@ -37,18 +37,6 @@ app.get("/api/persons/:id", (request, response, next) => {
 app.post("/api/persons", (request, response, next) => {
   const body = request.body;
 
-  // if (!body.name) {
-  //   return response.status(400).json({
-  //     error: "Name is missing",
-  //   });
-  // }
-
-  // if (!body.number) {
-  //   return response.status(400).json({
-  //     error: "Number is missing",
-  //   });
-  // }
-
   const person = new Person({
     name: body.name,
     number: body.number,
@@ -70,7 +58,10 @@ app.put("/api/persons/:id", (request, response, next) => {
     number: body.number,
   };
 
-  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+  Person.findByIdAndUpdate(request.params.id, person, {
+    new: true,
+    runValidators: true,
+  })
     .then((updatedPerson) => {
       response.json(updatedPerson);
     })
