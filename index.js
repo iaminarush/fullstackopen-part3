@@ -1,6 +1,8 @@
+import dotenv from "dotenv/config";
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import Person from "./models/person.js";
 
 const app = express();
 
@@ -42,7 +44,9 @@ const generateId = () => {
 };
 
 app.get("/api/persons", (request, response) => {
-  response.json(persons);
+  Person.find({}).then((persons) => {
+    response.json(persons);
+  });
 });
 
 app.get("/api/persons/:id", (request, response) => {
@@ -55,7 +59,7 @@ app.get("/api/persons/:id", (request, response) => {
   }
 });
 
-app.post("/api/persons/", (request, response) => {
+app.post("/api/persons", (request, response) => {
   const body = request.body;
 
   if (!body.name) {
